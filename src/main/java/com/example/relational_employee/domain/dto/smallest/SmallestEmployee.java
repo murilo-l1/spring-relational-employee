@@ -2,6 +2,7 @@ package com.example.relational_employee.domain.dto.smallest;
 
 import com.example.relational_employee.domain.entity.EmployeeJpa;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,11 +17,10 @@ public class SmallestEmployee {
     private final Long id;
 
     @NonNull
-    @NotNull
     private final String name;
 
     @Builder()
-    protected SmallestEmployee(@NonNull final String name,
+    protected SmallestEmployee(@NonNull @NotBlank final String name,
                                @NonNull final Long id){
         this.name = name;
         this.id = id;

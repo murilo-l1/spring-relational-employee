@@ -1,5 +1,7 @@
 package com.example.relational_employee.controller;
 
+import com.example.relational_employee.domain.dto.one.OneProductDto;
+import com.example.relational_employee.domain.dto.smallest.SmallestProductDto;
 import com.example.relational_employee.domain.entity.ProductJpa;
 import com.example.relational_employee.domain.payload.ProductCreatePayload;
 import com.example.relational_employee.usecase.product.ProductCreate;
@@ -29,14 +31,19 @@ public class ProductController {
         this.productCreate = productCreate;
     }
 
-    // find all products from a given employee by employee id
     @GetMapping
-    public ResponseEntity<List<ProductJpa>> findByEmployeeId(@PathVariable("employeeId") @NonNull final Long employeeId){
+    public ResponseEntity<List<SmallestProductDto>> findByEmployeeId(@PathVariable("employeeId") @NonNull final Long employeeId){
         return productFetch.findByEmployeeId(employeeId);
     }
 
+    @GetMapping("/{productId}")
+    public ResponseEntity<OneProductDto> getById(@PathVariable("employeeId") @NonNull final Long employeeId,
+                                                 @PathVariable("productId")  @NonNull final Long productId){
+        return productFetch.getById(productId, employeeId);
+    }
+
     @PostMapping
-    public ResponseEntity<ProductJpa> addProduct(@PathVariable("employeeId") @NonNull final Long employeeId,
+    public ResponseEntity<SmallestProductDto> addProduct(@PathVariable("employeeId") @NonNull final Long employeeId,
                                                  @RequestBody @NonNull final ProductCreatePayload payload){
         return productCreate.create(employeeId, payload);
     }

@@ -18,7 +18,6 @@ public class EmployeeCreatePayload {
     @Size(min = 1, max = 30)
     private final String name;
 
-
     @NotNull
     @NotBlank
     @Size(min = 1, max = 50)

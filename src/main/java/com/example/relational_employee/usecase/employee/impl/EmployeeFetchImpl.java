@@ -2,8 +2,12 @@ package com.example.relational_employee.usecase.employee.impl;
 
 import com.example.relational_employee.domain.dto.one.OneEmployee;
 import com.example.relational_employee.domain.dto.smallest.SmallestEmployee;
+import com.example.relational_employee.domain.dto.smallest.SmallestProductDto;
 import com.example.relational_employee.domain.entity.EmployeeJpa;
+import com.example.relational_employee.domain.entity.ProductJpa;
+import com.example.relational_employee.exception.EmployeeNotFoundException;
 import com.example.relational_employee.service.EmployeeService;
+import com.example.relational_employee.service.ProductService;
 import com.example.relational_employee.usecase.employee.EmployeeFetch;
 import jakarta.validation.constraints.NotNull;
 import lombok.NonNull;
@@ -17,19 +21,21 @@ import java.util.List;
 @Service(value = "employeeFetch")
 public class EmployeeFetchImpl implements EmployeeFetch {
 
-    private final EmployeeService service;
+    private final EmployeeService employeeService;
+    private final ProductService productService;
 
     @Autowired
-    public EmployeeFetchImpl(EmployeeService service) {
-        this.service = service;
+    public EmployeeFetchImpl( EmployeeService employeeService, ProductService productService) {
+        this.employeeService = employeeService;
+        this.productService = productService;
     }
 
 
     @Override
-    public ResponseEntity<List<OneEmployee>> findAll() {
-        List<EmployeeJpa> retrievedEmployeeJpas = service.findAll();
+    public ResponseEntity<List<SmallestEmployee>> findAll() {
+        final List<EmployeeJpa> retrievedEmployees = employeeService.findAll();
 
-        List<OneEmployee> parsedEmployees = OneEmployee.toOneDto(retrievedEmployeeJpas);
+        final List<SmallestEmployee> parsedEmployees = SmallestEmployee.toDto(retrievedEmployees);
 
         return ResponseEntity
                 .ok()
@@ -37,28 +43,21 @@ public class EmployeeFetchImpl implements EmployeeFetch {
     }
 
     @Override
-    public ResponseEntity<List<SmallestEmployee>> findAllSmall() {
-        List<EmployeeJpa> retrievedEmployeeJpas = service.findAll();
-        List<SmallestEmployee> parsedEmployees = SmallestEmployee.toDto(retrievedEmployeeJpas);
+    public ResponseEntity<OneEmployee> getById(@NonNull @NotNull final Long id) {
+        final EmployeeJpa retrievedEmployee = employeeService.getById(id).orElseThrow(EmployeeNotFoundException::new);
+        final List<ProductJpa> employeeProducts = productService.findByEmployeeId(id);
+
+        final List<SmallestProductDto> parsedProducts = SmallestProductDto.toDto(employeeProducts);
 
         return ResponseEntity
                 .ok()
-                .body(parsedEmployees);
-    }
-
-    @Override
-    public ResponseEntity<OneEmployee> findById(@NonNull @NotNull final Long id) {
-        EmployeeJpa retrievedEmployeeJpa = service.findById(id);
-
-        return ResponseEntity
-                .ok()
-                .body(OneEmployee.toOneDto(retrievedEmployeeJpa));
+                .body(OneEmployee.toOneDto(retrievedEmployee, parsedProducts));
     }
 
 
     @Override
-    public ResponseEntity<?> deleteById(@NonNull @NotNull final Long id) {
-        service.deleteById(id);
+    public ResponseEntity<String> deleteById(@NonNull @NotNull final Long id) {
+        employeeService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

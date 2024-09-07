@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service(value = "employeeService")
 public class EmployeeServiceImpl implements EmployeeService {
@@ -28,9 +29,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public EmployeeJpa findById(@NonNull final Long id) {
-        return repository.getOneById(id)
-                .orElseThrow(EmployeeNotFoundException::new);
+    public Optional<EmployeeJpa> getById(@NonNull final Long id) {
+        return repository.getOneById(id);
     }
 
 

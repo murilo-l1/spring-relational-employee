@@ -26,18 +26,13 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<OneEmployee>> findAll(){
+    public ResponseEntity<List<SmallestEmployee>> findAll(){
         return fetch.findAll();
-    }
-
-    @GetMapping("/smallest")
-    public ResponseEntity<List<SmallestEmployee>> findAllSmallest(){
-        return fetch.findAllSmall();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<OneEmployee> findById(@PathVariable("id") final Long id){
-        return fetch.findById(id);
+        return fetch.getById(id);
     }
 
     @PostMapping

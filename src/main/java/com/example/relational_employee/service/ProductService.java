@@ -7,13 +7,16 @@ import jakarta.validation.constraints.NotNull;
 import lombok.NonNull;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductService {
 
-    List<ProductJpa> getByEmployeeId(@NonNull @NotNull final Long employeeId);
+    List<ProductJpa> findByEmployeeId(@NonNull @NotNull final Long employeeId);
+
+    Optional<ProductJpa> getById(@NonNull @NotNull final Long id, @NonNull @NotNull final Long employeeId);
 
     ProductJpa save(@NonNull @NotNull final ProductJpa product);
 
-    ProductJpa create(@NonNull @NotNull final Long employeeId, @NonNull @NotNull final ProductCreatePayload payload);
+    ProductJpa create(@NonNull @NotNull final EmployeeJpa employee, @NonNull @NotNull final ProductCreatePayload payload);
 
 }

@@ -12,23 +12,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service("productService")
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
 
-    private final EmployeeService employeeService;
-
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository, EmployeeService employeeService) {
+    public ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
-        this.employeeService = employeeService;
     }
 
     @Override
-    public List<ProductJpa> getByEmployeeId(@NonNull @NotNull final Long employeeId) {
-        return productRepository.getByEmployeeId(employeeId);
+    public List<ProductJpa> findByEmployeeId(@NonNull @NotNull final Long employeeId) {
+        return productRepository.findByEmployeeIdOrderByQuantityAsc(employeeId);
+    }
+
+    @Override
+    public Optional<ProductJpa> getById(@NonNull final Long id, @NonNull final Long employeeId) {
+        return productRepository.getByIdAndEmployeeId(id, employeeId);
     }
 
     @Override
@@ -37,10 +40,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductJpa create(@NonNull @NotNull final Long employeeId,
+    public ProductJpa create(@NonNull @NotNull final EmployeeJpa employee,
                              @NonNull @NotNull final ProductCreatePayload payload) {
-
-        EmployeeJpa employee = employeeService.findById(employeeId);
 
         final ProductJpa product = new ProductJpa();
         product.setId(null);

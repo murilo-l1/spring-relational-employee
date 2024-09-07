@@ -10,11 +10,9 @@ import java.util.List;
 
 public interface EmployeeFetch {
 
-    ResponseEntity<List<OneEmployee>> findAll();
+    ResponseEntity<List<SmallestEmployee>> findAll();
 
-    ResponseEntity<List<SmallestEmployee>> findAllSmall();
-
-    ResponseEntity<OneEmployee> findById(@NonNull @NotNull final Long id);
+    ResponseEntity<OneEmployee> getById(@NonNull @NotNull final Long id);
 
     ResponseEntity<?> deleteById(@NonNull @NotNull final Long id);
 
